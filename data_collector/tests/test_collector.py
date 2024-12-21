@@ -3,8 +3,12 @@ from fastapi.testclient import TestClient
 from main import app
 from unittest.mock import patch, MagicMock
 
+@pytest.fixture
+def client():
+    return TestClient(app)
+
 @patch('main.pika.BlockingConnection')
-def test_receive_vehicle_data(mock_connection):
+def test_receive_vehicle_data(mock_connection, client):
     mock_channel = MagicMock()
     mock_connection.return_value.channel.return_value = mock_channel
 
