@@ -1,0 +1,19 @@
+# web-interface-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-interface-service
+  namespace: vehicle-monitoring
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 3000
+    targetPort: 3000
+    protocol: TCP
+    name: web
+  - port: 3001
+    targetPort: 3001
+    protocol: TCP
+    name: api
+  selector:
+    app: web-interface

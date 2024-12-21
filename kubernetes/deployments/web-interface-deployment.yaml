@@ -1,0 +1,34 @@
+# web-interface-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-interface
+  namespace: vehicle-monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-interface
+  template:
+    metadata:
+      labels:
+        app: web-interface
+    spec:
+      containers:
+      - name: web-interface
+        image: web-interface:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 3000  # React приложение
+        - containerPort: 3001  # API сервер
+        env:
+        - name: DATABASE_HOST
+          value: "database-service"
+        - name: DATABASE_NAME
+          value: "vehicle_monitoring"
+        - name: DATABASE_USER
+          value: "postgres"
+        - name: DATABASE_PASSWORD
+          value: "your_password"
+        - name: DATABASE_PORT
+          value: "5432"

@@ -1,0 +1,20 @@
+{
+  "name": "web-interface",
+  "version": "1.0.0",
+  "dependencies": {
+    "axios": "^0.24.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-scripts": "4.0.3",
+    "express": "^4.17.1",
+    "pg": "^8.7.1",
+    "cors": "^2.8.5"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --watchAll=false",
+    "eject": "react-scripts eject",
+    "server": "node server/server.js"
+  }
+}

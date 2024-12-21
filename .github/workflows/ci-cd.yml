@@ -1,0 +1,53 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+
+    # Сборка образов
+    - name: Build Data Collector
+      run: docker build -t data-collector:latest ./data_collector
+
+    - name: Build Data Processor
+      run: docker build -t data-processor:latest ./data_processor
+
+    - name: Build Web Interface
+      run: docker build -t web-interface:latest ./web_interface
+
+    # Тестирование
+    - name: Run Tests
+      run: |
+        cd data_collector && python -m pytest
+        cd ../data_processor && python -m pytest
+        cd ../web_interface && npm test
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v2
+
+    # Настройка kubectl
+    - name: Configure kubectl
+      uses: azure/k8s-set-context@v1
+      with:
+        kubeconfig: ${{ secrets.KUBE_CONFIG }}
+
+    # Применение конфигураций
+    - name: Deploy to Kubernetes
+      run: |
+        kubectl apply -f kubernetes/
+        kubectl rollout restart deployment/data-collector -n vehicle-monitoring
+        kubectl rollout restart deployment/data-processor -n vehicle-monitoring
+        kubectl rollout restart deployment/web-interface -n vehicle-monitoring

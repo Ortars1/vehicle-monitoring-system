@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    networks:
+      - vehicle_monitor_net
+
+  database:
+    image: postgres:13
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=your_password
+      - POSTGRES_DB=vehicle_monitoring
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - vehicle_monitor_net
+
+  data_collector:
+    build: ./data_collector
+    ports:
+      - "8000:8000"
+    depends_on:
+      - rabbitmq
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USER=guest
+      - RABBITMQ_PASS=guest
+    networks:
+      - vehicle_monitor_net
+    restart: on-failure
+
+  data_processor:
+    build: ./data_processor
+    depends_on:
+      - rabbitmq
+      - database
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USER=guest
+      - RABBITMQ_PASS=guest
+      - POSTGRES_HOST=database
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=vehicle_monitoring
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=your_password
+    networks:
+      - vehicle_monitor_net
+    restart: on-failure
+
+networks:
+  vehicle_monitor_net:
+    driver: bridge
+
+volumes:
+  pgdata:
