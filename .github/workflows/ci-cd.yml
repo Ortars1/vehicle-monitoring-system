@@ -47,7 +47,7 @@ jobs:
     # Применение конфигураций
     - name: Deploy to Kubernetes
       run: |
-        kubectl apply -f kubernetes/deployments/ || { echo "Error applying Kubernetes deployments"; exit 1; } 
+        kubectl apply -f kubernetes/deployments/
         kubectl apply -f kubernetes/services/
         kubectl rollout restart deployment/data-collector -n vehicle-monitoring
         kubectl rollout restart deployment/data-processor -n vehicle-monitoring
