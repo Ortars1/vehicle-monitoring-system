@@ -25,5 +25,5 @@ def test_receive_vehicle_data(mock_connection, client):
     )
 
     assert response.status_code == 200
-    mock_channel.queue_declare.assert_called_once_with(queue='vehicle_data')
+    mock_channel.queue_declare.assert_called_once_with(queue='vehicle_data', durable=True)
     mock_channel.basic_publish.assert_called_once()
