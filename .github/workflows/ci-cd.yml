@@ -28,7 +28,7 @@ jobs:
       run: |
         docker run --rm data-collector:latest python -m pytest
         # cd ../data_processor && python -m pytest
-        cd ../web_interface && npm test
+        docker run --rm -v $PWD/web_interface:/app web-interface:latest npm test
 
   deploy:
     needs: build-and-test
