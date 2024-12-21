@@ -14,6 +14,9 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Установка pytest
+RUN pip install pytest
+
 # Копирование исходного кода
 COPY . .
 

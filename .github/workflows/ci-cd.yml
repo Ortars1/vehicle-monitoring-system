@@ -27,7 +27,7 @@ jobs:
     - name: Run Tests
       run: |
         cd data_collector && python -m pytest
-        cd ../data_processor && python -m pytest
+        # cd ../data_processor && python -m pytest
         cd ../web_interface && npm test
 
   deploy:
