@@ -47,7 +47,7 @@ jobs:
     # Применение конфигураций
     - name: Deploy to Kubernetes
       run: |
-        kubectl apply -f kubernetes/
+        kubectl apply -f kubernetes/deployments/ && kubectl apply -f kubernetes/services/
         kubectl rollout restart deployment/data-collector -n vehicle-monitoring
         kubectl rollout restart deployment/data-processor -n vehicle-monitoring
         kubectl rollout restart deployment/web-interface -n vehicle-monitoring
