@@ -12,7 +12,7 @@ WORKDIR /app
 COPY --from=build /app/build ./build
 COPY server ./server
 COPY package*.json ./
-RUN npm install express pg cors react-scripts @testing-library/react
+RUN npm install express pg cors react-scripts @testing-library/react@16.1.0
 ENV NODE_ENV=production
 EXPOSE 3001
 CMD ["node", "server/server.js"]
